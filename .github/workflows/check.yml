@@ -1,0 +1,19 @@
+name: check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download splitdpi
+        run: |
+          base=https://github.com/KadirBerkpolat1/SplitDPI/releases/latest/download
+          curl -fsSLO "$base/splitdpi-linux-amd64"
+          curl -fsSLO "$base/sha256sums.txt"
+          grep ' splitdpi-linux-amd64$' sha256sums.txt | sha256sum -c -
+          install -m 755 splitdpi-linux-amd64 /usr/local/bin/splitdpi
+      - run: splitdpi presets check .
